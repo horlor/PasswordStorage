@@ -5,6 +5,7 @@ import tornadofx.*;
 import javax.jws.WebParam
 
 class PasswordRecord{
+
     var id : Int? = null
 
     val usernameProperty = SimpleStringProperty()
@@ -21,4 +22,12 @@ class PasswordRecord{
 
     val commentProperty = SimpleStringProperty()
     var comment by commentProperty
+
+    init{
+        username =""
+        password= ""
+        webPage = ""
+        email = ""
+        comment = ""
+    }
 }

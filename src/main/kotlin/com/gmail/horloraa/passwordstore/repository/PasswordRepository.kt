@@ -18,7 +18,7 @@ object PasswordRepository{
 
     fun add(record: PasswordRecord): PasswordRecord{
         val (password, passwordIv) = Crypto.encrypt(record.password)
-        return transaction {
+        val added = transaction {
             val ret = DbPasswordRecord.new{
                 username = record.username
                 email = record.email
@@ -29,6 +29,8 @@ object PasswordRepository{
             }
             return@transaction ret.toDomainModel()
         }
+        all.add(added);
+        return added;
     }
 
     fun update(record: PasswordRecord){
@@ -49,8 +51,11 @@ object PasswordRepository{
     fun delete(record: PasswordRecord){
         if(record.id == null)
             return
-        val dbrecord = DbPasswordRecord.get(record.id!!)
-        dbrecord.delete()
+        transaction {
+            val dbrecord = DbPasswordRecord.get(record.id!!)
+            dbrecord.delete();
+        }
+        all.remove(record)
     }
 }
 

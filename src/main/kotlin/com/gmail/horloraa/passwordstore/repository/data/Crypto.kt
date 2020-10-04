@@ -10,7 +10,7 @@ import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 
 
-object Crypto{
+internal object Crypto{
     private lateinit var key: SecretKey
 
     private val cipher: Cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")

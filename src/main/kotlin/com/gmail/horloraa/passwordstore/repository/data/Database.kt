@@ -9,8 +9,3 @@ object DbSetting{
     }
 }
 
-class EncryptedVarChar: VarCharColumnType(){
-    override fun valueToDB(value: Any?): Any? {
-        return super.valueToDB(value)
-    }
-}

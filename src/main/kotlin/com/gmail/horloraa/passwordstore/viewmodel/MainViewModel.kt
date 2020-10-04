@@ -2,18 +2,26 @@ package com.gmail.horloraa.passwordstore.viewmodel
 
 import com.gmail.horloraa.passwordstore.model.PasswordRecord
 import com.gmail.horloraa.passwordstore.repository.PasswordRepository
-import tornadofx.ViewModel
+import javafx.beans.property.SimpleStringProperty
+import javafx.collections.transformation.FilteredList
+import tornadofx.*
 
 class MainViewModel : ViewModel() {
-    val passwords  = PasswordRepository.all
+    val passwords   = SortedFilteredList( PasswordRepository.all)
 
-    val new = PasswordViewModel(PasswordRecord().apply {
-    })
+    val selected = PasswordViewModel(PasswordRecord())
 
-    fun add(){
-        new.commit()
-        val record = new.item
-        passwords.add(record);
-        PasswordRepository.add(record)
+    val searchStringProperty = SimpleStringProperty()
+    var searchString by searchStringProperty
+
+    fun removeSelected(){
+        selected.item?.let {
+            PasswordRepository.delete(it)
+        }
+    }
+
+    init{
+        searchString = ""
+        passwords.filterWhen(searchStringProperty,{query, item -> item.webPage.contains(searchString)})
     }
 }

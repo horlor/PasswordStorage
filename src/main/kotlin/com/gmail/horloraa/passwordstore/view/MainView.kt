@@ -3,42 +3,106 @@ package com.gmail.horloraa.passwordstore.view
 import com.gmail.horloraa.passwordstore.model.PasswordRecord
 import com.gmail.horloraa.passwordstore.viewmodel.MainViewModel
 import javafx.beans.property.SimpleIntegerProperty
+import javafx.scene.control.ContextMenu
+import javafx.scene.layout.Priority
 import tornadofx.*
 
 class MainView : View("Password store") {
 
-    //private val controller: MainController by inject()
     private val viewModel: MainViewModel by inject()
 
-    private val model = object : ViewModel() {
-        val counter = SimpleIntegerProperty()
-    }
-
-
-
     override val root = borderpane {
-        center = tableview(viewModel.passwords) {
-            readonlyColumn("Webpage", PasswordRecord::webPage)
-            readonlyColumn("Username", PasswordRecord::username)
-            readonlyColumn("Password", PasswordRecord::password)
-            readonlyColumn("Email", PasswordRecord::email)
-            readonlyColumn("Comment", PasswordRecord::comment)
+        bottom{
+            label(viewModel.searchStringProperty)
         }
-        right {
-            vbox{
-                form {
-                    fieldset {
-                        field("Username") { textfield(viewModel.new.username) }
-                        field("Password") { textfield(viewModel.new.password) }
-                        field("Email") { textfield(viewModel.new.email) }
-                        field("Webpage") { textfield(viewModel.new.webPage) }
-                        field("Comment") { textfield(viewModel.new.comment) }
+        center =vbox{
+            hbox {
+                button("Add").action {
+                    this@MainView.find<AddPasswordView> {
+                        this.openModal()
                     }
                 }
-                button("Add").action {
-                    viewModel.add()
+                textfield(viewModel.searchStringProperty) {
+                    hgrow = Priority.ALWAYS
+                }
+            }
+            tableview(viewModel.passwords) {
+                viewModel.passwords.bindTo(this)
+                readonlyColumn("Webpage", PasswordRecord::webPage)
+                readonlyColumn("Username", PasswordRecord::username)
+                readonlyColumn("Email", PasswordRecord::email)
+
+                viewModel.selected.rebindOnChange(this) { record ->
+                    item = record
+                }
+
+                contextmenu{
+                    item("Remove").action {
+                        viewModel.removeSelected()
+                    }
+                    item("Edit").action {
+
+                    }
                 }
             }
         }
+        right=gridpane{
+            prefWidth = 200.0
+            row{
+                label("Webpage"){
+                    gridpaneConstraints{
+                        columnIndex = 0
+                    }
+                }
+                label(viewModel.selected.webPage){
+                    gridpaneConstraints{
+                        columnIndex = 1
+                    }
+                }
+            }
+            row{
+                label("Username"){
+                    gridpaneConstraints{
+                        columnIndex = 0
+                    }
+                }
+                label(viewModel.selected.username){
+                    gridpaneConstraints{
+                        columnIndex = 1
+                    }
+                }
+            }
+            row{
+                label("Password"){
+                    gridpaneConstraints{
+                        columnIndex = 0
+                    }
+                }
+                label(viewModel.selected.password){
+                    gridpaneConstraints{
+                        columnIndex = 1
+                    }
+                }
+            }
+            row{
+                label("Email"){
+                    gridpaneConstraints{
+                        columnIndex = 0
+                    }
+                }
+                label(viewModel.selected.email){
+                    gridpaneConstraints{
+                        columnIndex = 1
+                    }
+                }
+            }
+            row("comment")
+            row{
+                text(viewModel.selected.comment)
+            }
+
+        }
+
+
     }
 }
