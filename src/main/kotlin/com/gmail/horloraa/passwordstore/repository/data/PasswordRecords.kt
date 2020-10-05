@@ -8,7 +8,7 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
 
 object PasswordRecords : IntIdTable(){
-    val webPage: Column<String> = varchar("webpage",250).default("")
+    val webPage: Column<String> = varchar("webpage",250).index().default("")
     val username: Column<String> = varchar("username",100).index()
     val passwordIV = binary("passwordIv",16)
     val password = binary("password",255)

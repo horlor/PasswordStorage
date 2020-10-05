@@ -9,7 +9,7 @@ import tornadofx.*
 class MainViewModel : ViewModel() {
     val passwords   = SortedFilteredList( PasswordRepository.all)
 
-    val selected = PasswordViewModel(PasswordRecord())
+    val selected : SelectedPasswordViewModel by inject()
 
     val searchStringProperty = SimpleStringProperty()
     var searchString by searchStringProperty

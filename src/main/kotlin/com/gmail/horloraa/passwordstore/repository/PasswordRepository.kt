@@ -4,8 +4,13 @@ import com.gmail.horloraa.passwordstore.model.PasswordRecord
 import com.gmail.horloraa.passwordstore.repository.data.Crypto
 import javafx.collections.ObservableList
 import com.gmail.horloraa.passwordstore.repository.data.DbPasswordRecord
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransactionAsync
 import org.jetbrains.exposed.sql.transactions.transaction
 import tornadofx.asObservable
+import tornadofx.invalidate
 
 object PasswordRepository{
     val all : ObservableList<com.gmail.horloraa.passwordstore.model.PasswordRecord> by lazy{
@@ -18,7 +23,8 @@ object PasswordRepository{
 
     fun add(record: PasswordRecord): PasswordRecord{
         val (password, passwordIv) = Crypto.encrypt(record.password)
-        val added = transaction {
+
+        val added  = transaction {
             val ret = DbPasswordRecord.new{
                 username = record.username
                 email = record.email
@@ -27,7 +33,7 @@ object PasswordRepository{
                 this.password = password
                 this.passwordIv = passwordIv
             }
-            return@transaction ret.toDomainModel()
+            ret.toDomainModel()
         }
         all.add(added);
         return added;
@@ -46,6 +52,7 @@ object PasswordRepository{
             dbrecord.password = password
             dbrecord.passwordIv = passwordiv
         }
+        all.invalidate()
     }
 
     fun delete(record: PasswordRecord){

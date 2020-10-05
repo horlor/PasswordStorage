@@ -14,22 +14,19 @@ class AddPasswordView() : View("Add new record") {
                 field("Password") { textfield(viewModel.password) }
                 field("Email") { textfield(viewModel.email) }
                 field("Webpage") { textfield(viewModel.webPage) }
-                field("Comment") { textfield(viewModel.comment) }
+                field("Comment") { textarea(viewModel.comment) }
             }
         }
-        borderpane{
-            left {
-                button("Add").action{
-                    viewModel.add()
-                    this@AddPasswordView.close()
-                }
+        hbox(10) {
+            button("Add").action {
+                viewModel.add()
+                this@AddPasswordView.close()
             }
-            right{
-                button("Cancel").action {
-                    this@AddPasswordView.close()
-                }
+            button("Cancel").action {
+                this@AddPasswordView.close()
             }
         }
-
     }
+
 }
+

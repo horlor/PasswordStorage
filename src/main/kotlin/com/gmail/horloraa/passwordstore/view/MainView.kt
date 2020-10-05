@@ -4,17 +4,16 @@ import com.gmail.horloraa.passwordstore.model.PasswordRecord
 import com.gmail.horloraa.passwordstore.viewmodel.MainViewModel
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.scene.control.ContextMenu
+import javafx.scene.image.Image
 import javafx.scene.layout.Priority
 import tornadofx.*
+import javax.xml.soap.Detail
 
 class MainView : View("Password store") {
 
     private val viewModel: MainViewModel by inject()
 
     override val root = borderpane {
-        bottom{
-            label(viewModel.searchStringProperty)
-        }
         center =vbox{
             hbox {
                 button("Add").action {
@@ -28,10 +27,11 @@ class MainView : View("Password store") {
             }
             tableview(viewModel.passwords) {
                 viewModel.passwords.bindTo(this)
-                readonlyColumn("Webpage", PasswordRecord::webPage)
-                readonlyColumn("Username", PasswordRecord::username)
+                smartResize()
                 readonlyColumn("Email", PasswordRecord::email)
-
+                readonlyColumn("Webpage", PasswordRecord::webPage).remainingWidth()
+                readonlyColumn("Username", PasswordRecord::username)
+                prefWidth = 400.0
                 viewModel.selected.rebindOnChange(this) { record ->
                     item = record
                 }
@@ -41,68 +41,14 @@ class MainView : View("Password store") {
                         viewModel.removeSelected()
                     }
                     item("Edit").action {
-
+                        this@MainView.find<EditPasswordView> {
+                            this.openModal()
+                        }
                     }
                 }
             }
         }
-        right=gridpane{
-            prefWidth = 200.0
-            row{
-                label("Webpage"){
-                    gridpaneConstraints{
-                        columnIndex = 0
-                    }
-                }
-                label(viewModel.selected.webPage){
-                    gridpaneConstraints{
-                        columnIndex = 1
-                    }
-                }
-            }
-            row{
-                label("Username"){
-                    gridpaneConstraints{
-                        columnIndex = 0
-                    }
-                }
-                label(viewModel.selected.username){
-                    gridpaneConstraints{
-                        columnIndex = 1
-                    }
-                }
-            }
-            row{
-                label("Password"){
-                    gridpaneConstraints{
-                        columnIndex = 0
-                    }
-                }
-                label(viewModel.selected.password){
-                    gridpaneConstraints{
-                        columnIndex = 1
-                    }
-                }
-            }
-            row{
-                label("Email"){
-                    gridpaneConstraints{
-                        columnIndex = 0
-                    }
-                }
-                label(viewModel.selected.email){
-                    gridpaneConstraints{
-                        columnIndex = 1
-                    }
-                }
-            }
-            row("comment")
-            row{
-                text(viewModel.selected.comment)
-            }
-
-        }
-
-
+        right<DetailPasswordView>()
     }
+
 }

@@ -18,7 +18,7 @@ class PasswordRecord{
     var webPage by webPageProperty
 
     val emailProperty = SimpleStringProperty()
-    var email by usernameProperty
+    var email by emailProperty
 
     val commentProperty = SimpleStringProperty()
     var comment by commentProperty
