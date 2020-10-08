@@ -4,9 +4,13 @@ import com.gmail.horloraa.passwordstore.model.PasswordRecord
 import com.gmail.horloraa.passwordstore.repository.data.Crypto
 import javafx.collections.ObservableList
 import com.gmail.horloraa.passwordstore.repository.data.DbPasswordRecord
+import com.gmail.horloraa.passwordstore.repository.data.PasswordRecords
+import com.sun.org.apache.xpath.internal.operations.Bool
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransactionAsync
 import org.jetbrains.exposed.sql.transactions.transaction
 import tornadofx.asObservable
@@ -19,6 +23,10 @@ object PasswordRepository{
                 return@map it.toDomainModel()
             }.asObservable()
         }
+    }
+
+    fun loginWithPassword(password: String){
+        Crypto.calculateKey(password);
     }
 
     fun add(record: PasswordRecord): PasswordRecord{
@@ -63,6 +71,19 @@ object PasswordRepository{
             dbrecord.delete();
         }
         all.remove(record)
+    }
+
+    fun checkTableExist(): Boolean{
+        return transaction {
+            PasswordRecords.exists()
+        }
+    }
+
+    fun createTable(password: String) {
+        transaction {
+            SchemaUtils.create(PasswordRecords);
+            loginWithPassword(password)
+        }
     }
 }
 
