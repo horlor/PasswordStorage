@@ -11,10 +11,11 @@ class EditPasswordView() : View("My View") {
     override val root = vbox{
         form {
             fieldset {
-                field("Username") { textfield(viewModel.username) }
-                field("Password") { textfield(viewModel.password) }
-                field("Email"){ textfield(viewModel.email) }
                 field("Webpage") { textfield(viewModel.webPage) }
+                field("Username") { textfield(viewModel.username) }
+                field("Email"){ textfield(viewModel.email) }
+                field("Password") { textfield(viewModel.password) }
+                field("Tag"){textfield(viewModel.tag) }
                 field("Comment") { textarea(viewModel.comment) }
             }
         }

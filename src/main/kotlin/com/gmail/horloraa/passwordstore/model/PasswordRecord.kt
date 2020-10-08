@@ -2,7 +2,6 @@ package com.gmail.horloraa.passwordstore.model
 
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.*;
-import javax.jws.WebParam
 
 class PasswordRecord{
 
@@ -23,11 +22,15 @@ class PasswordRecord{
     val commentProperty = SimpleStringProperty()
     var comment by commentProperty
 
+    val tagProperty = SimpleStringProperty()
+    var tag by tagProperty
+
     init{
         username =""
         password= ""
         webPage = ""
         email = ""
         comment = ""
+        tag = ""
     }
 }

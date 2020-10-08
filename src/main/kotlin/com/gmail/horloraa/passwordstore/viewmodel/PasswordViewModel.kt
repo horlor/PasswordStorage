@@ -9,4 +9,5 @@ open class PasswordViewModel() : ItemViewModel<PasswordRecord>(){
     val email = bind(PasswordRecord::emailProperty)
     val comment = bind(PasswordRecord::commentProperty)
     val webPage = bind(PasswordRecord::webPageProperty)
+    val tag = bind(PasswordRecord::tagProperty)
 }

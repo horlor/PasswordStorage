@@ -1,6 +1,7 @@
 package com.gmail.horloraa.passwordstore.view
 
 import com.gmail.horloraa.passwordstore.viewmodel.CreateViewModel
+import sun.applet.Main
 import tornadofx.*
 
 class CreateView : View("My View") {
@@ -23,7 +24,8 @@ class CreateView : View("My View") {
             }
             button("Register").action{
                 viewModel.createDatabase()
-                replaceWith<MainView>()
+                this@CreateView.close()
+                this@CreateView.find<MainView>().openWindow()
             }
         }
     }

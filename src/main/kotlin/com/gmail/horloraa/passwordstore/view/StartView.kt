@@ -10,10 +10,13 @@ class StartView : View("My View") {
         label("Password Storage")
         passwordfield(viewModel.passwordProperty)
         button("Login").action{
-            viewModel.onLogin()
-            this@StartView.close();
-            find<MainView>().openWindow()
-
+            if(viewModel.onLogin()){
+                this@StartView.close();
+                find<MainView>().openWindow()
+            }
+            else{
+                error("The password is wrong","The password you given is not matching the stored. Please try again")
+            }
         }
         prefWidth = 800.0
         prefHeight = 500.0
@@ -21,7 +24,9 @@ class StartView : View("My View") {
 
     override fun onDock() {
         super.onDock()
-        if(!viewModel.fileExists)
+        if(!viewModel.fileExists){
+            this.close()
             find<CreateView>().openWindow()
+        }
     }
 }

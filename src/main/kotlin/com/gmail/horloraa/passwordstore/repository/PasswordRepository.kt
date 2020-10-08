@@ -1,17 +1,11 @@
 package com.gmail.horloraa.passwordstore.repository
 
 import com.gmail.horloraa.passwordstore.model.PasswordRecord
+import com.gmail.horloraa.passwordstore.repository.data.*
 import com.gmail.horloraa.passwordstore.repository.data.Crypto
 import javafx.collections.ObservableList
-import com.gmail.horloraa.passwordstore.repository.data.DbPasswordRecord
-import com.gmail.horloraa.passwordstore.repository.data.PasswordRecords
-import com.sun.org.apache.xpath.internal.operations.Bool
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.exists
-import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransactionAsync
 import org.jetbrains.exposed.sql.transactions.transaction
 import tornadofx.asObservable
 import tornadofx.invalidate
@@ -25,8 +19,20 @@ object PasswordRepository{
         }
     }
 
-    fun loginWithPassword(password: String){
-        Crypto.calculateKey(password);
+    fun login(password: String): Boolean{
+        val data = transaction {
+             DbLoginRecord.all().elementAt(0)
+        }
+
+        val res = Crypto.checkHash(password,data.hash,data.hashSalt)
+        if(res){
+            loginWithPassword(password,data.passwordSalt)
+        }
+        return res
+    }
+
+    private fun loginWithPassword(password: String, salt: ByteArray){
+        Crypto.calculateKey(password, salt);
     }
 
     fun add(record: PasswordRecord): PasswordRecord{
@@ -38,6 +44,7 @@ object PasswordRepository{
                 email = record.email
                 webPage = record.webPage
                 comment = record.comment
+                tag = record.tag
                 this.password = password
                 this.passwordIv = passwordIv
             }
@@ -59,6 +66,7 @@ object PasswordRepository{
             dbrecord.webPage = record.webPage
             dbrecord.password = password
             dbrecord.passwordIv = passwordiv
+            dbrecord.tag = record.tag
         }
         all.invalidate()
     }
@@ -82,7 +90,15 @@ object PasswordRepository{
     fun createTable(password: String) {
         transaction {
             SchemaUtils.create(PasswordRecords);
-            loginWithPassword(password)
+            SchemaUtils.create(LoginRecords);
+            val (hashSalt, passwordHash, salt) = Crypto.calculateHash(password)
+            DbLoginRecord.new{
+                this.hashSalt = hashSalt
+                this.hash = passwordHash
+                this.passwordSalt = salt;
+            }
+            loginWithPassword(password,passwordHash)
+
         }
     }
 }
@@ -95,5 +111,6 @@ fun DbPasswordRecord.toDomainModel(): PasswordRecord{
         webPage = this@toDomainModel.webPage
         comment = this@toDomainModel.comment
         password = Crypto.decrypt(this@toDomainModel.password,this@toDomainModel.passwordIv)
+        tag = this@toDomainModel.tag
     }
 }

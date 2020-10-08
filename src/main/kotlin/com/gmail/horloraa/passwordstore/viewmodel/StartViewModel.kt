@@ -12,8 +12,8 @@ class StartViewModel : ViewModel() {
         password = ""
     }
 
-    fun onLogin(){
-        PasswordRepository.loginWithPassword(password);
+    fun onLogin(): Boolean{
+        return PasswordRepository.login(password);
     }
 
     val fileExists = PasswordRepository.checkTableExist()

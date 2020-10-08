@@ -23,6 +23,9 @@ class MainViewModel : ViewModel() {
 
     init{
         searchString = ""
-        passwords.filterWhen(searchStringProperty,{query, item -> item.webPage.contains(searchString)})
+        passwords.filterWhen(searchStringProperty,
+                { query, item ->
+                    item.webPage.contains(searchString) || item.tag.contains(searchString)
+                })
     }
 }

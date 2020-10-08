@@ -31,6 +31,7 @@ class MainView : View("Password store") {
                 readonlyColumn("Email", PasswordRecord::email)
                 readonlyColumn("Webpage", PasswordRecord::webPage).remainingWidth()
                 readonlyColumn("Username", PasswordRecord::username)
+                readonlyColumn("Tag", PasswordRecord::tag)
                 prefWidth = 400.0
                 viewModel.selected.rebindOnChange(this) { record ->
                     item = record
