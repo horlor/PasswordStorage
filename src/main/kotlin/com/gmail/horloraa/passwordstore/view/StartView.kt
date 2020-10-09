@@ -1,10 +1,13 @@
 package com.gmail.horloraa.passwordstore.view
 
 import com.gmail.horloraa.passwordstore.viewmodel.StartViewModel
+import javafx.scene.image.Image
+import javafx.scene.image.ImageView
 import javafx.stage.Modality
 import tornadofx.*
+import java.io.FileInputStream
 
-class StartView : View("My View") {
+class StartView : View("Password storage") {
     val viewModel: StartViewModel by inject()
     override val root = vbox {
         label("Password Storage")
@@ -18,8 +21,8 @@ class StartView : View("My View") {
                 error("The password is wrong","The password you given is not matching the stored. Please try again")
             }
         }
-        prefWidth = 800.0
-        prefHeight = 500.0
+        prefWidth = 400.0
+        prefHeight = 300.0
     }
 
     override fun onDock() {
@@ -28,5 +31,9 @@ class StartView : View("My View") {
             this.close()
             find<CreateView>().openWindow()
         }
+    }
+
+    override fun onBeforeShow() {
+        super.onBeforeShow()
     }
 }

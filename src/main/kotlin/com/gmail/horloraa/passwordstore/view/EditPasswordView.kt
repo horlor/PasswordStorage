@@ -1,5 +1,6 @@
 package com.gmail.horloraa.passwordstore.view
 
+import com.gmail.horloraa.passwordstore.view.controls.PasswordFieldWithShow
 import com.gmail.horloraa.passwordstore.viewmodel.PasswordViewModel
 import com.gmail.horloraa.passwordstore.viewmodel.SelectedPasswordViewModel
 import javafx.scene.Parent
@@ -14,7 +15,7 @@ class EditPasswordView() : View("My View") {
                 field("Webpage") { textfield(viewModel.webPage) }
                 field("Username") { textfield(viewModel.username) }
                 field("Email"){ textfield(viewModel.email) }
-                field("Password") { textfield(viewModel.password) }
+                field("Password") { this@field+=PasswordFieldWithShow(viewModel.password) }
                 field("Tag"){textfield(viewModel.tag) }
                 field("Comment") { textarea(viewModel.comment) }
             }
