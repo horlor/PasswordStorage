@@ -4,7 +4,7 @@ import com.gmail.horloraa.passwordstore.repository.PasswordRepository
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.*
 
-class StartViewModel : ViewModel() {
+class LoginViewModel : ViewModel() {
     val passwordProperty = SimpleStringProperty()
     var password by passwordProperty
 

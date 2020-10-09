@@ -3,7 +3,7 @@ import com.gmail.horloraa.passwordstore.repository.PasswordRepository
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.*
 
-class CreateViewModel : ItemViewModel<RegisterModel>() {
+class RegisterViewModel : ItemViewModel<RegisterModel>() {
     val password = bind(RegisterModel::passwordProperty)
     val passwordAgain = bind(RegisterModel::passwordAgainProperty)
 

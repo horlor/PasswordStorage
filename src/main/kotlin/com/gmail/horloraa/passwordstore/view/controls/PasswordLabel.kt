@@ -42,7 +42,8 @@ class PasswordLabel(private val passwordProperty: SimpleStringProperty) : Fragme
                 textShown = passwordProperty.value
             }
             onMouseReleased = EventHandler {
-                textShown = "⦁⦁⦁⦁⦁⦁⦁⦁"
+                if(passwordProperty.value != "" &&passwordProperty.value != null)
+                    textShown = "⦁⦁⦁⦁⦁⦁⦁⦁"
             }
 
         }

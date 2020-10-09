@@ -15,6 +15,9 @@ class MainView : View("Password store") {
 
     override val root = borderpane {
         center =vbox{
+            style{
+                padding = box(5.px)
+            }
             hbox {
                 button("Add").action {
                     this@MainView.find<AddPasswordView> {
@@ -23,6 +26,7 @@ class MainView : View("Password store") {
                 }
                 textfield(viewModel.searchStringProperty) {
                     hgrow = Priority.ALWAYS
+                    this.promptText = "Search..."
                 }
             }
             tableview(viewModel.passwords) {

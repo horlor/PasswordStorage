@@ -1,11 +1,10 @@
 package com.gmail.horloraa.passwordstore.view
 
-import com.gmail.horloraa.passwordstore.viewmodel.CreateViewModel
-import sun.applet.Main
+import com.gmail.horloraa.passwordstore.viewmodel.RegisterViewModel
 import tornadofx.*
 
-class CreateView : View("My View") {
-    val viewModel : CreateViewModel by inject()
+class RegisterView : View("Creating store") {
+    val viewModel : RegisterViewModel by inject()
     override val root = vbox {
         text("There is no store set up on your device, please give the password you want to use for it." +
                 "\nNote that if you forget the given password there is no way to retrieve your data.")
@@ -22,10 +21,13 @@ class CreateView : View("My View") {
                     }
                 }
             }
-            button("Register").action{
+            button("Register"){
+                disableProperty().bind(!viewModel.dirty)
+                action{
                 viewModel.createDatabase()
-                this@CreateView.close()
-                this@CreateView.find<MainView>().openWindow()
+                this@RegisterView.close()
+                this@RegisterView.find<MainView>().openWindow()
+                }
             }
         }
     }

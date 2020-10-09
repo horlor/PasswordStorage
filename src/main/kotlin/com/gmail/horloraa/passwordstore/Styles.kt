@@ -17,5 +17,11 @@ class Styles : Stylesheet() {
             fontSize = 14.px
             fontWeight = FontWeight.BOLD
         }
+        text{
+            fontSize = 14.px
+        }
+        textField{
+            fontSize = 14.px
+        }
     }
 }
