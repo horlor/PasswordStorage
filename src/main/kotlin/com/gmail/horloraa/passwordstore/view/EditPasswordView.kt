@@ -7,7 +7,7 @@ import javafx.scene.Parent
 import tornadofx.*
 import tornadofx.Form
 
-class EditPasswordView() : View("My View") {
+class EditPasswordView() : View("Edit Record") {
     private val viewModel : SelectedPasswordViewModel by inject()
     override val root = vbox{
         form {

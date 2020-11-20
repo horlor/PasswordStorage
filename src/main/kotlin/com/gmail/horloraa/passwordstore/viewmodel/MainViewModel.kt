@@ -1,13 +1,12 @@
 package com.gmail.horloraa.passwordstore.viewmodel
 
-import com.gmail.horloraa.passwordstore.model.PasswordRecord
-import com.gmail.horloraa.passwordstore.repository.PasswordRepository
+import com.gmail.horloraa.passwordstore.services.PasswordService
 import javafx.beans.property.SimpleStringProperty
-import javafx.collections.transformation.FilteredList
 import tornadofx.*
 
 class MainViewModel : ViewModel() {
-    val passwords   = SortedFilteredList( PasswordRepository.all)
+    val passwordService = PasswordService
+    val passwords   = SortedFilteredList( passwordService.getAll())
 
     val selected : SelectedPasswordViewModel by inject()
 
@@ -16,10 +15,21 @@ class MainViewModel : ViewModel() {
 
     fun removeSelected(){
         selected.item?.let {
-            PasswordRepository.delete(it)
+            passwordService.delete(it);
         }
     }
 
+    fun openStorage(){
+        val files = chooseFile(title="Open storage file",mode = FileChooserMode.Single,filters =  arrayOf())
+        val file = files.first()
+        passwordService.openRepository(file.absolutePath)
+    }
+
+    fun createStorage(){
+        val files = chooseFile(title="Open storage file",mode = FileChooserMode.Single,filters =  arrayOf())
+        val file = files.first()
+        passwordService.createRepository(file.absolutePath)
+    }
 
     init{
         searchString = ""
@@ -28,4 +38,5 @@ class MainViewModel : ViewModel() {
             item.webPage.contains(searchString) || item.tag.contains(searchString)
         }
     }
+
 }

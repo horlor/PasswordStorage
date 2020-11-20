@@ -1,6 +1,8 @@
 package com.gmail.horloraa.passwordstore.view
 
+import com.gmail.horloraa.passwordstore.extension.changeWindowWithNewScope
 import com.gmail.horloraa.passwordstore.viewmodel.RegisterViewModel
+import javafx.scene.layout.Priority
 import tornadofx.*
 
 class RegisterView : View("Creating store") {
@@ -25,10 +27,29 @@ class RegisterView : View("Creating store") {
                 disableProperty().bind(!viewModel.dirty)
                 action{
                 viewModel.createDatabase()
-                this@RegisterView.close()
-                this@RegisterView.find<MainView>().openWindow()
+                this@RegisterView.replaceWith<MainView>()
                 }
             }
         }
+        label("Open storage"){
+            onLeftClick {
+                viewModel.openStorage()
+                this@RegisterView.changeWindowWithNewScope<LoginView>()
+            }
+        }
+        vbox{
+            hgrow = Priority.ALWAYS
+        }
+        label("Create storage"){
+            onLeftClick {
+                viewModel.createStorage()
+                this@RegisterView.changeWindowWithNewScope<RegisterView>()
+            }
+        }
+    }
+
+    override fun onDock() {
+        super.onDock()
+        currentWindow?.sizeToScene()
     }
 }

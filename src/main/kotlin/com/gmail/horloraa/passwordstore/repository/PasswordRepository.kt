@@ -4,15 +4,33 @@ import com.gmail.horloraa.passwordstore.model.PasswordRecord
 import com.gmail.horloraa.passwordstore.repository.data.*
 import com.gmail.horloraa.passwordstore.repository.data.Crypto
 import javafx.collections.ObservableList
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.transactions.transaction
 import tornadofx.asObservable
 import tornadofx.invalidate
+import java.io.File
 
-object PasswordRepository{
+private val defaultPath by lazy{
+    val userhome = System.getProperty("user.home");
+    val path = "$userhome\\.password_store"
+    val dir = File(path)
+    if(!dir.exists()) {
+        dir.mkdir();
+    }
+    return@lazy "$path\\passwords.db"
+}
+
+class PasswordRepository(private val path: String){
+    private val database by lazy{
+        Database.connect("jdbc:sqlite:$path", "org.sqlite.JDBC")
+    }
+
+    constructor() : this(defaultPath)
+
     val all : ObservableList<com.gmail.horloraa.passwordstore.model.PasswordRecord> by lazy{
-        transaction{
+        transaction(database){
             DbPasswordRecord.all().map{
                 return@map it.toDomainModel()
             }.asObservable()
@@ -20,7 +38,7 @@ object PasswordRepository{
     }
 
     fun login(password: String): Boolean{
-        val data = transaction {
+        val data = transaction(database) {
              DbLoginRecord.all().elementAt(0)
         }
 
@@ -38,7 +56,7 @@ object PasswordRepository{
     fun add(record: PasswordRecord): PasswordRecord{
         val (password, passwordIv) = Crypto.encrypt(record.password)
 
-        val added  = transaction {
+        val added  = transaction(database) {
             val ret = DbPasswordRecord.new{
                 username = record.username
                 email = record.email
@@ -58,7 +76,7 @@ object PasswordRepository{
         if(record.id == null)
             return
         val (password, passwordiv) = Crypto.encrypt(record.password)
-        transaction {
+        transaction(database) {
             val dbrecord = DbPasswordRecord.get(record.id!!)
             dbrecord.comment = record.comment
             dbrecord.email = record.email
@@ -74,7 +92,7 @@ object PasswordRepository{
     fun delete(record: PasswordRecord){
         if(record.id == null)
             return
-        transaction {
+        transaction(database) {
             val dbrecord = DbPasswordRecord.get(record.id!!)
             dbrecord.delete();
         }
@@ -82,13 +100,13 @@ object PasswordRepository{
     }
 
     fun checkTableExist(): Boolean{
-        return transaction {
+        return transaction(database) {
             PasswordRecords.exists()
         }
     }
 
     fun createTable(password: String) {
-        transaction {
+        transaction(database) {
             SchemaUtils.create(PasswordRecords);
             SchemaUtils.create(LoginRecords);
             val (hashSalt, passwordHash, salt) = Crypto.calculateHash(password)
@@ -97,7 +115,7 @@ object PasswordRepository{
                 this.hash = passwordHash
                 this.passwordSalt = salt;
             }
-            loginWithPassword(password,passwordHash)
+            loginWithPassword(password,salt)
 
         }
     }

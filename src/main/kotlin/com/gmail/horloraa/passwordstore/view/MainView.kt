@@ -1,19 +1,44 @@
 package com.gmail.horloraa.passwordstore.view
 
+import com.gmail.horloraa.passwordstore.extension.changeWindowWithNewScope
 import com.gmail.horloraa.passwordstore.model.PasswordRecord
 import com.gmail.horloraa.passwordstore.viewmodel.MainViewModel
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.scene.control.ContextMenu
 import javafx.scene.image.Image
 import javafx.scene.layout.Priority
+import javafx.stage.FileChooser
 import tornadofx.*
 import javax.xml.soap.Detail
 
 class MainView : View("Password store") {
 
-    private val viewModel: MainViewModel by inject()
+    private val viewModel =  MainViewModel()
 
     override val root = borderpane {
+        top{
+            menubar{
+                menu("File"){
+                    item("Open storage"){
+                        action{
+                            viewModel.openStorage()
+                            this@MainView.changeWindowWithNewScope<LoginView>()
+                        }
+                    }
+                    item("Create storage"){
+                        action{
+                            viewModel.createStorage()
+                            this@MainView.changeWindowWithNewScope<RegisterView>()
+                        }
+                    }
+                    item("Exit"){
+                        action{
+                            this@MainView.close()
+                        }
+                    }
+                }
+            }
+        }
         center =vbox{
             style{
                 padding = box(5.px)
@@ -54,6 +79,12 @@ class MainView : View("Password store") {
             }
         }
         right<DetailPasswordView>()
+    }
+
+    override fun onDock() {
+        super.onDock()
+        currentWindow?.sizeToScene()
+
     }
 
 }
