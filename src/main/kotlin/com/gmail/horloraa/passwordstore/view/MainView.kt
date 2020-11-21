@@ -23,15 +23,14 @@ class MainView : View("Password store") {
                 menu("File"){
                     item("Open storage"){
                         action{
-                            //TODO only switch if there is reason - a file was 
-                            viewModel.openStorage()
-                            this@MainView.changeWindowWithNewScope<LoginView>()
+                            if (viewModel.openStorage())
+                                this@MainView.changeWindowWithNewScope<LoginView>()
                         }
                     }
                     item("Create storage"){
                         action{
-                            viewModel.createStorage()
-                            this@MainView.changeWindowWithNewScope<RegisterView>()
+                            if(viewModel.createStorage())
+                                this@MainView.changeWindowWithNewScope<RegisterView>()
                         }
                     }
                     item("Exit"){

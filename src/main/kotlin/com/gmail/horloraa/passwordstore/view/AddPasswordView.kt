@@ -20,7 +20,9 @@ class AddPasswordView() : View("Add new record") {
             }
         }
         hbox(10) {
-            button("Add").action {
+            button("Add") {
+                disableProperty().bind(!viewModel.dirty)
+            }.action {
                 viewModel.add()
                 this@AddPasswordView.close()
             }

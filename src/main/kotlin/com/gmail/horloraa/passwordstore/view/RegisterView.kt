@@ -17,7 +17,7 @@ class RegisterView : View("Creating store") {
                 }
                 field("Password again"){
                     passwordfield(viewModel.passwordAgain).validator {
-                        if(viewModel.password.value != viewModel.passwordAgain.value)
+                        if(viewModel.password != viewModel.passwordAgain)
                             error("The two passwords's must match")
                         else null
                     }
@@ -34,7 +34,7 @@ class RegisterView : View("Creating store") {
         hbox {
             label("Open storage"){
                 onLeftClick {
-                    viewModel.openStorage()
+                    if(viewModel.openStorage())
                     this@RegisterView.changeWindowWithNewScope<LoginView>()
                 }
             }
@@ -43,7 +43,7 @@ class RegisterView : View("Creating store") {
             }
             label("Create storage"){
                 onLeftClick {
-                    viewModel.createStorage()
+                    if(viewModel.createStorage())
                     this@RegisterView.changeWindowWithNewScope<RegisterView>()
                 }
             }

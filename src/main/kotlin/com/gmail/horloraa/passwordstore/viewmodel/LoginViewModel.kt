@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.stage.FileChooser
 import tornadofx.*
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel : StorageViewModel() {
     val passwordService = PasswordService
     val passwordProperty = SimpleStringProperty()
     var password by passwordProperty
@@ -20,16 +20,5 @@ class LoginViewModel : ViewModel() {
 
     fun fileExists() = passwordService.checkTableExist()
 
-    fun openStorage(){
-        val files = chooseFile(title="Open storage file",mode = FileChooserMode.Single,filters =  arrayOf())
-        val file = files.first()
-        passwordService.openRepository(file.absolutePath)
-    }
-
-    fun createStorage(){
-        val files = chooseFile(title="Open storage file",mode = FileChooserMode.Single,filters =  arrayOf())
-        val file = files.first()
-        passwordService.createRepository(file.absolutePath)
-    }
 }
 

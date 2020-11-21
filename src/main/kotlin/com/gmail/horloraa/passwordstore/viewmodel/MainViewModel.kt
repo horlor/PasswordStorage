@@ -4,7 +4,7 @@ import com.gmail.horloraa.passwordstore.services.PasswordService
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.*
 
-class MainViewModel : ViewModel() {
+class MainViewModel : StorageViewModel() {
     val passwordService = PasswordService
     val passwords   = SortedFilteredList( passwordService.getAll())
 
@@ -18,27 +18,6 @@ class MainViewModel : ViewModel() {
             passwordService.delete(it);
         }
     }
-
-    fun openStorage(){
-        //TODO
-        val files = chooseFile(title="Open storage file",mode = FileChooserMode.Single,filters =  arrayOf())
-        if(!files.isEmpty()){
-            val file = files.first()
-            println(file.absolutePath)
-            passwordService.openRepository(file.absolutePath)
-        }
-
-    }
-
-    fun createStorage(){
-        val files = chooseFile(title="Open storage file",mode = FileChooserMode.Single,filters =  arrayOf())
-        if(!files.isEmpty()){
-            val file = files.first()
-            passwordService.createRepository(file.absolutePath)
-        }
-
-    }
-
 
     init{
         searchString = ""

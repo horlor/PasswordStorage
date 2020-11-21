@@ -14,15 +14,21 @@ class ChangePasswordFragment : Fragment("Change your password"){
         form(){
             fieldset {
                 field("New Password"){
-                    passwordfield(viewModel.passwordProperty)
+                    passwordfield(viewModel.password)
                 }
                 field("New password again"){
-                    passwordfield (viewModel.passwordAgainProperty)
+                    passwordfield (viewModel.passwordAgain)
+                            .validator {
+                                if (viewModel.password != viewModel.passwordAgain)
+                                    error("The two passwords's must match")
+                                else null
+                            }
                 }
             }
         }
         hbox{
             button("Change"){
+                disableProperty().bind(!viewModel.dirty)
                 action{
                     viewModel.commit()
                     this@ChangePasswordFragment.close()

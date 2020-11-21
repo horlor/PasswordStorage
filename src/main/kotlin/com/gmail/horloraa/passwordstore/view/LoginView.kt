@@ -45,8 +45,8 @@ class LoginView : View("Password storage") {
             hbox {
                 label("Open storage"){
                     onLeftClick {
-                        viewModel.openStorage()
-                        this@LoginView.changeWindowWithNewScope<LoginView>()
+                        if(viewModel.openStorage())
+                            this@LoginView.changeWindowWithNewScope<LoginView>()
                     }
                 }
                 vbox{
@@ -54,8 +54,8 @@ class LoginView : View("Password storage") {
                 }
                 label("Create storage"){
                     onLeftClick {
-                        viewModel.createStorage()
-                        this@LoginView.changeWindowWithNewScope<RegisterView>()
+                        if(viewModel.createStorage())
+                            this@LoginView.changeWindowWithNewScope<RegisterView>()
                     }
                 }
             }
