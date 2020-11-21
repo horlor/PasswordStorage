@@ -14,14 +14,14 @@ class Styles : Stylesheet() {
     init {
         label and heading {
             padding = box(10.px)
-            fontSize = 14.px
+            fontSize = 16.px
             fontWeight = FontWeight.BOLD
         }
         text{
-            fontSize = 14.px
+            fontSize = 16.px
         }
         textField{
-            fontSize = 14.px
+            fontSize = 16.px
         }
     }
 }

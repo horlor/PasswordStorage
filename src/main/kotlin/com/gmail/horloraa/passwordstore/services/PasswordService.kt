@@ -37,5 +37,5 @@ object PasswordService {
 
     fun createTable(password: String) = repository.createTable(password)
 
-
+    fun changePassword(password: String) = repository.changePassword(password)
 }

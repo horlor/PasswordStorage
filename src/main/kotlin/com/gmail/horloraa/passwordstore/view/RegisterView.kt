@@ -31,19 +31,21 @@ class RegisterView : View("Creating store") {
                 }
             }
         }
-        label("Open storage"){
-            onLeftClick {
-                viewModel.openStorage()
-                this@RegisterView.changeWindowWithNewScope<LoginView>()
+        hbox {
+            label("Open storage"){
+                onLeftClick {
+                    viewModel.openStorage()
+                    this@RegisterView.changeWindowWithNewScope<LoginView>()
+                }
             }
-        }
-        vbox{
-            hgrow = Priority.ALWAYS
-        }
-        label("Create storage"){
-            onLeftClick {
-                viewModel.createStorage()
-                this@RegisterView.changeWindowWithNewScope<RegisterView>()
+            vbox{
+                hgrow = Priority.ALWAYS
+            }
+            label("Create storage"){
+                onLeftClick {
+                    viewModel.createStorage()
+                    this@RegisterView.changeWindowWithNewScope<RegisterView>()
+                }
             }
         }
     }

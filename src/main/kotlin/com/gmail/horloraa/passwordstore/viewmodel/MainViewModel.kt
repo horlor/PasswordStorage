@@ -20,16 +20,25 @@ class MainViewModel : ViewModel() {
     }
 
     fun openStorage(){
+        //TODO
         val files = chooseFile(title="Open storage file",mode = FileChooserMode.Single,filters =  arrayOf())
-        val file = files.first()
-        passwordService.openRepository(file.absolutePath)
+        if(!files.isEmpty()){
+            val file = files.first()
+            println(file.absolutePath)
+            passwordService.openRepository(file.absolutePath)
+        }
+
     }
 
     fun createStorage(){
         val files = chooseFile(title="Open storage file",mode = FileChooserMode.Single,filters =  arrayOf())
-        val file = files.first()
-        passwordService.createRepository(file.absolutePath)
+        if(!files.isEmpty()){
+            val file = files.first()
+            passwordService.createRepository(file.absolutePath)
+        }
+
     }
+
 
     init{
         searchString = ""

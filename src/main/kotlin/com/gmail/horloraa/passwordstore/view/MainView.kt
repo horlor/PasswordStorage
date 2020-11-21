@@ -1,6 +1,7 @@
 package com.gmail.horloraa.passwordstore.view
 
 import com.gmail.horloraa.passwordstore.extension.changeWindowWithNewScope
+import com.gmail.horloraa.passwordstore.extension.openModalInNewScope
 import com.gmail.horloraa.passwordstore.model.PasswordRecord
 import com.gmail.horloraa.passwordstore.viewmodel.MainViewModel
 import javafx.beans.property.SimpleIntegerProperty
@@ -8,6 +9,7 @@ import javafx.scene.control.ContextMenu
 import javafx.scene.image.Image
 import javafx.scene.layout.Priority
 import javafx.stage.FileChooser
+import javafx.stage.StageStyle
 import tornadofx.*
 import javax.xml.soap.Detail
 
@@ -21,6 +23,7 @@ class MainView : View("Password store") {
                 menu("File"){
                     item("Open storage"){
                         action{
+                            //TODO only switch if there is reason - a file was 
                             viewModel.openStorage()
                             this@MainView.changeWindowWithNewScope<LoginView>()
                         }
@@ -37,6 +40,14 @@ class MainView : View("Password store") {
                         }
                     }
                 }
+                menu("Storage"){
+                    item("Change password"){
+                        action {
+                            this@MainView.openModalInNewScope<ChangePasswordFragment>()
+                        }
+                    }
+                }
+
             }
         }
         center =vbox{
@@ -45,9 +56,7 @@ class MainView : View("Password store") {
             }
             hbox {
                 button("Add").action {
-                    this@MainView.find<AddPasswordView> {
-                        this.openModal()
-                    }
+                    this@MainView.openModalInNewScope<AddPasswordView>()
                 }
                 textfield(viewModel.searchStringProperty) {
                     hgrow = Priority.ALWAYS
@@ -71,9 +80,7 @@ class MainView : View("Password store") {
                         viewModel.removeSelected()
                     }
                     item("Edit").action {
-                        this@MainView.find<EditPasswordView> {
-                            this.openModal()
-                        }
+                        this@MainView.openModalInNewScope<EditPasswordView>()
                     }
                 }
             }

@@ -119,6 +119,31 @@ class PasswordRepository(private val path: String){
 
         }
     }
+
+    fun changePassword(passwordstr: String){
+        val (hashSalt, passwordHash, salt) = Crypto.calculateHash(passwordstr)
+        transaction {
+            val data = transaction(database) {
+                DbLoginRecord.all().elementAt(0)
+            }
+            data.hashSalt = hashSalt
+            data.hash = passwordHash
+            data.passwordSalt = salt
+
+            loginWithPassword(passwordstr, salt)
+
+            DbPasswordRecord.all().forEachIndexed { idx, record ->
+                val (password, iv) = Crypto.encrypt(all[idx].password)
+
+                record.password = password
+                record.passwordIv = iv
+            }
+
+
+
+
+        }
+    }
 }
 
 fun DbPasswordRecord.toDomainModel(): PasswordRecord{

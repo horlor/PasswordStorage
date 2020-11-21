@@ -68,8 +68,4 @@ class LoginView : View("Password storage") {
         }
         currentWindow?.sizeToScene()
     }
-
-    override fun onBeforeShow() {
-        super.onBeforeShow()
-    }
 }
