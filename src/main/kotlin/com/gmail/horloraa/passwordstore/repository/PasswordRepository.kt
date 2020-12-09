@@ -3,9 +3,15 @@ package com.gmail.horloraa.passwordstore.repository
 import com.gmail.horloraa.passwordstore.model.PasswordRecord
 import com.gmail.horloraa.passwordstore.repository.data.*
 import javafx.collections.ObservableList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.exists
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransactionAsync
 import org.jetbrains.exposed.sql.transactions.transaction
 import tornadofx.asObservable
 import tornadofx.invalidate
@@ -81,19 +87,24 @@ class PasswordRepository(private val path: String){
 
     constructor() : this(defaultPath)
 
-    val all : ObservableList<com.gmail.horloraa.passwordstore.model.PasswordRecord> by lazy{
-        transaction(database){
-            DbPasswordRecord.all().map{
-                return@map it.toDomainModel()
-            }.asObservable()
+    val all = mutableListOf<PasswordRecord>().asObservable()
+
+    suspend fun loadRecords(){
+        val records =
+            newSuspendedTransaction (Dispatchers.IO,db=database) {
+                DbPasswordRecord.all().map {
+                    it.toDomainModel()
+                }
+            }
+        records.forEach {
+            all.add(it)
         }
     }
 
-    fun login(password: String): Boolean{
-        val data = transaction(database) {
+    suspend fun login(password: String): Boolean{
+        val data = newSuspendedTransaction(Dispatchers.IO, database) {
              DbLoginRecord.all().elementAt(0)
         }
-
         val res = Crypto.checkHash(password,data.hash,data.hashSalt)
         if(res){
             loginWithPassword(password,data.passwordSalt)
@@ -105,10 +116,13 @@ class PasswordRepository(private val path: String){
         Crypto.calculateKey(password, salt);
     }
 
-    fun add(record: PasswordRecord): PasswordRecord{
-        val (password, passwordIv) = Crypto.encrypt(record.password)
+    suspend fun add(record: PasswordRecord): PasswordRecord{
+        val (password, passwordIv) =
+                withContext(Dispatchers.Main){
+                    Crypto.encrypt(record.password)
+                }
 
-        val added  = transaction(database) {
+        val added  = newSuspendedTransaction(Dispatchers.IO, database) {
             val ret = DbPasswordRecord.new{
                 username = record.username
                 email = record.email
@@ -124,11 +138,11 @@ class PasswordRepository(private val path: String){
         return added;
     }
 
-    fun update(record: PasswordRecord){
+    suspend fun update(record: PasswordRecord){
         if(record.id == null)
             return
         val (password, passwordiv) = Crypto.encrypt(record.password)
-        transaction(database) {
+        newSuspendedTransaction(Dispatchers.IO, database) {
             val dbrecord = DbPasswordRecord.get(record.id!!)
             dbrecord.comment = record.comment
             dbrecord.email = record.email
@@ -141,10 +155,10 @@ class PasswordRepository(private val path: String){
         all.invalidate()
     }
 
-    fun delete(record: PasswordRecord){
+    suspend fun delete(record: PasswordRecord){
         if(record.id == null)
             return
-        transaction(database) {
+        newSuspendedTransaction(Dispatchers.IO,database) {
             val dbrecord = DbPasswordRecord.get(record.id!!)
             dbrecord.delete();
         }
@@ -157,8 +171,8 @@ class PasswordRepository(private val path: String){
         }
     }
 
-    fun createTable(password: String) {
-        transaction(database) {
+    suspend fun createTable(password: String) {
+        newSuspendedTransaction(Dispatchers.IO,database) {
             SchemaUtils.create(PasswordRecords);
             SchemaUtils.create(LoginRecords);
             val (hashSalt, passwordHash, salt) = Crypto.calculateHash(password)
@@ -172,9 +186,9 @@ class PasswordRepository(private val path: String){
         }
     }
 
-    fun changePassword(passwordstr: String){
+    suspend fun changePassword(passwordstr: String){
         val (hashSalt, passwordHash, salt) = Crypto.calculateHash(passwordstr)
-        transaction(database) {
+        newSuspendedTransaction(Dispatchers.IO,database) {
             val data = transaction(database) {
                 DbLoginRecord.all().elementAt(0)
             }
@@ -190,10 +204,6 @@ class PasswordRepository(private val path: String){
                 record.password = password
                 record.passwordIv = iv
             }
-
-
-
-
         }
     }
 

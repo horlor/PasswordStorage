@@ -21,21 +21,24 @@ object PasswordService {
         openRepository(path);
     }
 
-    fun login(password: String): Boolean{
+    suspend fun login(password: String): Boolean{
         return repository.login(password);
     }
 
+    //This only gives a reference you must load the data in order to get the Items.
     fun getAll() = repository.all
 
-    fun add(record: PasswordRecord): PasswordRecord = repository.add(record)
+    suspend fun loadItems() = repository.loadRecords()
 
-    fun update(record: PasswordRecord) = repository.update(record)
+    suspend fun add(record: PasswordRecord): PasswordRecord = repository.add(record)
 
-    fun delete(record:PasswordRecord) = repository.delete(record)
+    suspend fun update(record: PasswordRecord) = repository.update(record)
+
+    suspend fun delete(record:PasswordRecord) = repository.delete(record)
 
     fun checkTableExist() = repository.checkTableExist()
 
-    fun createTable(password: String) = repository.createTable(password)
+    suspend fun createTable(password: String) = repository.createTable(password)
 
-    fun changePassword(password: String) = repository.changePassword(password)
+    suspend fun changePassword(password: String) = repository.changePassword(password)
 }

@@ -4,14 +4,8 @@ import com.gmail.horloraa.passwordstore.extension.changeWindowWithNewScope
 import com.gmail.horloraa.passwordstore.extension.openModalInNewScope
 import com.gmail.horloraa.passwordstore.model.PasswordRecord
 import com.gmail.horloraa.passwordstore.viewmodel.MainViewModel
-import javafx.beans.property.SimpleIntegerProperty
-import javafx.scene.control.ContextMenu
-import javafx.scene.image.Image
 import javafx.scene.layout.Priority
-import javafx.stage.FileChooser
-import javafx.stage.StageStyle
 import tornadofx.*
-import javax.xml.soap.Detail
 
 class MainView : View("Password store") {
 
@@ -42,7 +36,7 @@ class MainView : View("Password store") {
                 menu("Storage"){
                     item("Change password"){
                         action {
-                            this@MainView.openModalInNewScope<ChangePasswordFragment>()
+                            this@MainView.openModalInNewScope<ChangePasswordView>()
                         }
                     }
                 }
@@ -73,13 +67,15 @@ class MainView : View("Password store") {
                 viewModel.selected.rebindOnChange(this) { record ->
                     item = record
                 }
-
+                placeholder = label(viewModel.placeholderProperty)
                 contextmenu{
                     item("Remove").action {
                         viewModel.removeSelected()
                     }
                     item("Edit").action {
-                        this@MainView.openModalInNewScope<EditPasswordView>()
+                        this@MainView.find<EditPasswordView> {
+                            this.openModal();
+                        }
                     }
                 }
             }

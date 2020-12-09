@@ -2,6 +2,10 @@ package com.gmail.horloraa.passwordstore.viewmodel
 
 import com.gmail.horloraa.passwordstore.model.PasswordRecord
 import com.gmail.horloraa.passwordstore.services.PasswordService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.javafx.JavaFx
+import kotlinx.coroutines.launch
 
 class AddPasswordViewModel : PasswordViewModel() {
     val passwordService = PasswordService
@@ -11,7 +15,9 @@ class AddPasswordViewModel : PasswordViewModel() {
     fun add(){
         commit()
         item?.let {
-            passwordService.add(it)
+            GlobalScope.launch{
+                passwordService.add(it)
+            }
         }
     }
 }

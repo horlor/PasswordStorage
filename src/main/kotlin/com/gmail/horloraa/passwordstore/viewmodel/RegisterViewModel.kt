@@ -1,6 +1,10 @@
 package com.gmail.horloraa.passwordstore.viewmodel
 import com.gmail.horloraa.passwordstore.model.RegisterModel
 import com.gmail.horloraa.passwordstore.services.PasswordService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import tornadofx.*
 
 class RegisterViewModel : ItemViewModel<RegisterModel>() {
@@ -8,9 +12,12 @@ class RegisterViewModel : ItemViewModel<RegisterModel>() {
     val password = bind(RegisterModel::passwordProperty)
     val passwordAgain = bind(RegisterModel::passwordAgainProperty)
 
-    fun createDatabase(){
+    suspend fun createDatabase(){
         commit()
-        passwordService.createTable(password.value)
+        withContext(Dispatchers.IO) {
+            passwordService.createTable(password.value)
+        }
+
     }
 
     fun openStorage() = openStorageFun()

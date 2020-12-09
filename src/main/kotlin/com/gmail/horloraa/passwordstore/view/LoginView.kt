@@ -1,5 +1,6 @@
 package com.gmail.horloraa.passwordstore.view
 
+import com.gmail.horloraa.passwordstore.extension.asyncAction
 import com.gmail.horloraa.passwordstore.extension.changeWindowWithNewScope
 import com.gmail.horloraa.passwordstore.viewmodel.LoginViewModel
 import javafx.geometry.Pos
@@ -32,7 +33,7 @@ class LoginView : View("Password storage") {
                     alignment = Pos.CENTER
                 }
                 button("Login") {
-                    action {
+                    asyncAction {
                         if (viewModel.onLogin()) {
                             this@LoginView.replaceWith<MainView>();
                         } else {

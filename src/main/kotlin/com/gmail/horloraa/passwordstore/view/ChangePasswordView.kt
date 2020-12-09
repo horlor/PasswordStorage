@@ -5,7 +5,7 @@ import javafx.scene.Parent
 import javafx.scene.layout.Priority
 import tornadofx.*
 
-class ChangePasswordFragment : Fragment("Change your password"){
+class ChangePasswordView : View("Change your password"){
     val viewModel: ChangePasswordViewModel by inject()
     override val root: Parent = vbox {
         style{
@@ -19,7 +19,7 @@ class ChangePasswordFragment : Fragment("Change your password"){
                 field("New password again"){
                     passwordfield (viewModel.passwordAgain)
                             .validator {
-                                if (viewModel.password != viewModel.passwordAgain)
+                                if (viewModel.password.value != viewModel.passwordAgain.value)
                                     error("The two passwords's must match")
                                 else null
                             }
@@ -31,7 +31,7 @@ class ChangePasswordFragment : Fragment("Change your password"){
                 disableProperty().bind(!viewModel.dirty)
                 action{
                     viewModel.commit()
-                    this@ChangePasswordFragment.close()
+                    this@ChangePasswordView.close()
                 }
 
             }
@@ -40,7 +40,7 @@ class ChangePasswordFragment : Fragment("Change your password"){
             }
             button("Cancel"){
                 action{
-                    this@ChangePasswordFragment.close()
+                    this@ChangePasswordView.close()
                 }
             }
         }

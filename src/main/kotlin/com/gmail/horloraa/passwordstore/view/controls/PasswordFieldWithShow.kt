@@ -7,7 +7,7 @@ import javafx.scene.layout.Priority
 import tornadofx.*
 import java.io.FileInputStream
 
-class PasswordFieldWithShow(private val passwordProperty: SimpleStringProperty) : Fragment("PasswordField") {
+class PasswordFieldWithShow( val passwordProperty: SimpleStringProperty) : Fragment("PasswordField") {
     private val passwordField = passwordfield(passwordProperty)
     private var hidden = false
 

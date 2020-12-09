@@ -1,5 +1,6 @@
 package com.gmail.horloraa.passwordstore.view
 
+import com.gmail.horloraa.passwordstore.extension.asyncAction
 import com.gmail.horloraa.passwordstore.extension.changeWindowWithNewScope
 import com.gmail.horloraa.passwordstore.viewmodel.RegisterViewModel
 import javafx.scene.layout.Priority
@@ -25,9 +26,9 @@ class RegisterView : View("Creating store") {
             }
             button("Register"){
                 disableProperty().bind(!viewModel.dirty)
-                action{
-                viewModel.createDatabase()
-                this@RegisterView.replaceWith<MainView>()
+                asyncAction{
+                    viewModel.createDatabase()
+                    this@RegisterView.replaceWith<MainView>()
                 }
             }
         }
