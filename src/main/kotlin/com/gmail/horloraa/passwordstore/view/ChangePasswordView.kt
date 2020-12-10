@@ -1,7 +1,10 @@
 package com.gmail.horloraa.passwordstore.view
 
+import com.gmail.horloraa.passwordstore.extension.asyncAction
 import com.gmail.horloraa.passwordstore.viewmodel.ChangePasswordViewModel
+import javafx.geometry.Pos
 import javafx.scene.Parent
+import javafx.scene.control.ProgressIndicator
 import javafx.scene.layout.Priority
 import tornadofx.*
 
@@ -27,10 +30,22 @@ class ChangePasswordView : View("Change your password"){
             }
         }
         hbox{
+            hboxConstraints {
+                alignment = Pos.CENTER
+            }
+            hiddenWhen(!viewModel.isBusyProperty)
+            managedWhen(viewModel.isBusyProperty)
+            progressindicator{
+                this.progress = ProgressIndicator.INDETERMINATE_PROGRESS
+            }
+        }
+        hbox{
+            hiddenWhen(viewModel.isBusyProperty)
+            managedWhen(!viewModel.isBusyProperty)
             button("Change"){
                 disableProperty().bind(!viewModel.dirty)
-                action{
-                    viewModel.commit()
+                asyncAction{
+                    viewModel.onChange()
                     this@ChangePasswordView.close()
                 }
 

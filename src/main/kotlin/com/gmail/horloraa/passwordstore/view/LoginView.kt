@@ -5,6 +5,7 @@ import com.gmail.horloraa.passwordstore.extension.changeWindowWithNewScope
 import com.gmail.horloraa.passwordstore.viewmodel.LoginViewModel
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
+import javafx.scene.control.ProgressIndicator
 import javafx.scene.layout.Priority
 import tornadofx.*
 import javax.swing.text.html.ImageView
@@ -40,6 +41,13 @@ class LoginView : View("Password storage") {
                             error("The password is wrong", "The password you given is not matching the stored. Please try again")
                         }
                     }
+                    hiddenWhen(viewModel.isBusyProperty)
+                    managedWhen(!viewModel.isBusyProperty)
+                }
+                progressindicator{
+                    progress = ProgressIndicator.INDETERMINATE_PROGRESS
+                    hiddenWhen(!viewModel.isBusyProperty)
+                    managedWhen(viewModel.isBusyProperty)
                 }
 
             }
