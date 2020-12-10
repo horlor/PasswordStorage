@@ -8,7 +8,11 @@ import tornadofx.ViewModel
 import tornadofx.chooseFile
 
 fun openStorageFun(): Boolean{
-    val files = chooseFile(title="Open storage file",mode = FileChooserMode.Single,filters =  arrayOf())
+    val files = chooseFile(
+            title = "Open storage file",
+            mode = FileChooserMode.Single,
+            filters = arrayOf(FileChooser.ExtensionFilter("Database files","*.db"))
+    )
     if(!files.isEmpty()){
         val file = files.first()
         PasswordService.openRepository(file.absolutePath)
@@ -18,7 +22,11 @@ fun openStorageFun(): Boolean{
 }
 
 fun createStorageFun(): Boolean{
-    val files = chooseFile(title="Create storage file",mode = FileChooserMode.Save,filters =  arrayOf())
+    val files = chooseFile(
+            title = "Create storage file",
+            mode = FileChooserMode.Save,
+            filters = arrayOf(FileChooser.ExtensionFilter("Database files","*.db"))
+    )
     if(!files.isEmpty()){
         val file = files.first()
         PasswordService.createRepository(file.absolutePath)

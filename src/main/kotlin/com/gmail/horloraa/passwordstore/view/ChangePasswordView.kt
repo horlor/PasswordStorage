@@ -17,15 +17,18 @@ class ChangePasswordView : View("Change your password"){
         form(){
             fieldset {
                 field("New Password"){
-                    passwordfield(viewModel.password)
+                    passwordfield(viewModel.password).required()
                 }
                 field("New password again"){
-                    passwordfield (viewModel.passwordAgain)
-                            .validator {
-                                if (viewModel.password.value != viewModel.passwordAgain.value)
-                                    error("The two passwords's must match")
-                                else null
-                            }
+                    passwordfield (viewModel.passwordAgain).apply{
+                        validator {
+                            if (viewModel.password.value != viewModel.passwordAgain.value)
+                                error("The two passwords's must match")
+                            else null
+                        }
+                        required()
+                    }
+
                 }
             }
         }
@@ -43,7 +46,7 @@ class ChangePasswordView : View("Change your password"){
             hiddenWhen(viewModel.isBusyProperty)
             managedWhen(!viewModel.isBusyProperty)
             button("Change"){
-                disableProperty().bind(!viewModel.dirty)
+                enableWhen(viewModel.valid)
                 asyncAction{
                     viewModel.onChange()
                     this@ChangePasswordView.close()

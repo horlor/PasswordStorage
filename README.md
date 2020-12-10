@@ -10,11 +10,11 @@
 * JetBrains Exposed
  
 ## Implementation
-The app consists uses a four layered architecture:
-+ View
-+ ViewModel
-+ Domain
-+ Data Access
+The app consists uses a four layered architecture (after the dash the containing packeges):
++ View - `view`
++ ViewModel - `viewmodel`
++ Domain - `model, services`
++ Data Access - `repository`
 
 ### Data Access Layer
 For easy installing I used a simple SQLite database to store the data.
@@ -24,6 +24,9 @@ I used JetBrains Exposed library to use an ORM to access the DB entities by a ty
 To hide the implementation of the data handling I used the Repository pattern which gives back Domain entities,
  and provides methods for handling them (update, remove, etc.). It also contains the
  logic that provides the encryption.
+ 
+ The repository provides asynchronicity by kotlin coroutines, but all of its suspend functions
+ works correctly if they were started on the App's UI thread.
  
  ### Domain
  
@@ -40,4 +43,9 @@ To hide the implementation of the data handling I used the Repository pattern wh
  The application uses the JavaFX components, by using the provide extensions. I haven't used the FXML, because
  TornadoFX provides a similar quasi declarative UI desingning method, but it uses Kotlin code, thus it's type safe.
  
+ I created a few extensions for TornadoFx classes, for example enabling async actions on buttons, these can be found in
+ extension package.
  
+ ## Running
+ 
+ The application's main function can be found in MyApp.kt, which starts the tornadofx application.

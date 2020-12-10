@@ -12,7 +12,7 @@ import tornadofx.*
 class DetailPasswordView() : View("Detailview for password") {
     private val viewModel: SelectedPasswordViewModel by inject()
     override val root = vbox{
-        prefWidth=250.0
+        prefWidth=300.0
         form {
             fieldset() {
                 field("Webpage") {
