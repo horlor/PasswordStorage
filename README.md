@@ -2,6 +2,8 @@
  
  This is a simple application which can be used to store passwords and according information safely.
  
+ [User manual](manual.md)
+ 
 ## Used technologies, libraries
 
 * Java 8
